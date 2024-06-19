@@ -50,8 +50,15 @@ export const interpretInput = (input: string = "") => {
     return "url";
   } catch (e) {}
 
-  if (isGlob(_input)) {
-    return "glob";
+  if (isGlob(_input, { strict: true })) {
+    const parts = _input.split('\\ ');
+    // Require spaces be escaped in a glob,
+    // otherwise queries that include glob chars
+    // such as [ and ] may be incorrectly treated
+    // as globs
+    if (!parts.some(part => part.includes(' '))) {
+      return "glob";
+    }
   }
 
   return "query";
