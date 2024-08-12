@@ -17,7 +17,8 @@ Positionals:
 
 Control Flow:
   -i, --interactive                                                    [boolean]
-  -c, --continue                                                       [boolean]
+  -c, --continue     Resume conversation from recovery file. [default: true]
+                                                                       [boolean]
 
 File System:
   -r, --read           Resume conversation from file.                   [string]
@@ -29,6 +30,10 @@ File System:
       --clean          Clean up recovery file for current shell.       [boolean]
 
 Options:
+      --tokens   Maximum number of tokens to sample. 400 tokens is approximately
+                 one page of text. You can also configure tokens by setting the
+                 environment variable CHAT_MAX_TOKENS. [max: 200000]
+                                                      [number] [default: 200000]
       --version  Show version number                                   [boolean]
       --help     Show help                                             [boolean]
 
@@ -37,8 +42,8 @@ Examples:
   chat "Explain the singularity"   Prompt once.
   chat --interactive               Start in interactive mode.
   chat -i src/commands/default.ts  Load contents of file into chat.
-  chat -i src                      Load contents of files in src.
-  chat -i "src/**/*"               Load contents of files matching glob.
+  chat -i ./src                    Load contents of files in src.
+  chat -i "./src/**/*"             Load contents of files matching glob.
   chat --read convo.md Summarize   Summarize existing conversation.
   chat -i -r convo.md -a convo.md  Resume persisted conversation.
   chat -i -ra convo.md             Shorthand for resume conversation.
@@ -48,8 +53,8 @@ Examples:
   ::ls .                           Execute ls and summarize output.
   > time.md                        Write conversation to file in -i mode.
   >> time.md                       Append conversation to file in -i mode.
-  src                              Load contents of files in src.
-  src/**/*                         Load contents of files matching glob.
+  ./src                            Load contents of files in src.
+  ./src/**/*                       Load contents of files matching glob.
   Why is the sky blue?             Prompt without quotes.
 ```
 

@@ -5,6 +5,7 @@ import { execSync } from "node:child_process";
 import { globSync } from "glob";
 import { interpretInput } from "./interpretInput";
 import { log } from "../extern/log";
+import { maxTokens } from "./maxTokens";
 
 export const generateConversation = async (input: string = "") => {
   let conversation: string = "";

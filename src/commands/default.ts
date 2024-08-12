@@ -9,10 +9,12 @@ import { generateConversation } from "../components/generateConversation";
 import { interpretInput } from "../components/interpretInput";
 import { log } from "../extern/log";
 import { silenceConsoleLog } from "../init/silenceConsoleLog";
+import { maxTokens } from "../components/maxTokens";
 
 const Group = {
   ctrl: "Control Flow:",
   fs: "File System:",
+  options: "Options:",
 };
 
 cli
@@ -57,6 +59,7 @@ cli
     append?: string;
     clean?: boolean;
     recover?: boolean;
+    tokens?: number;
   }>(
     "$0 [input]",
     "",
@@ -77,7 +80,7 @@ cli
         alias: "c",
         type: "boolean",
         boolean: true,
-        description: "Resume conversation from recovey file (default: true).",
+        description: "Resume conversation from recovery file. [default: true]",
         conflicts: ["read"],
       });
       yargs.option("read", {
@@ -148,6 +151,13 @@ cli
           "recovery-path",
         ],
       });
+      yargs.options("tokens", {
+        group: Group.options,
+        type: "number",
+        default: 200000,
+        description: "Maximum number of tokens to sample. 400 tokens is approximately one page of text. You can also configure tokens by setting the environment variable CHAT_MAX_TOKENS. [max: 200000]",
+        number: true,
+      });
     },
     async (argv) => {
       const uid = process.ppid.toString();
@@ -168,7 +178,12 @@ cli
         cleanAll = false,
         clean = false,
         recoveryPath = false,
+        tokens
       } = argv;
+
+      if (tokens) {
+        maxTokens.set(tokens);
+      }
 
       if (recoveryPath) {
         log.print(convoFp);
