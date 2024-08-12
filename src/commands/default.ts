@@ -34,8 +34,8 @@ cli
     `chat -i src/commands/default.ts`,
     "Load contents of file into chat."
   )
-  .example(`chat -i src`, "Load contents of files in src.")
-  .example(`chat -i "src/**/*"`, "Load contents of files matching glob.")
+  .example(`chat -i ./src`, "Load contents of files in src.")
+  .example(`chat -i "./src/**/*"`, "Load contents of files matching glob.")
   .example(`chat --read convo.md Summarize`, "Summarize existing conversation.")
   .example(`chat -i -r convo.md -a convo.md`, "Resume persisted conversation.")
   .example(`chat -i -ra convo.md`, "Shorthand for resume conversation.")
@@ -45,8 +45,8 @@ cli
   .example(`::ls .`, "Execute ls and summarize output.")
   .example(`> time.md`, "Write conversation to file in -i mode.")
   .example(`>> time.md`, "Append conversation to file in -i mode.")
-  .example(`src`, "Load contents of files in src.")
-  .example(`src/**/*`, "Load contents of files matching glob.")
+  .example(`./src`, "Load contents of files in src.")
+  .example(`./src/**/*`, "Load contents of files matching glob.")
   .example(`Why is the sky blue?`, "Prompt without quotes.")
   .command<{
     input?: string;
@@ -154,6 +154,7 @@ cli
       const tmpDir = path.join(os.tmpdir(), "chat");
       const tmpUDir = path.join(tmpDir, uid);
       const convoFp = path.join(tmpUDir, "convo.md");
+      const help = await cli.getHelp() + "\n";
 
       silenceConsoleLog();
 
@@ -353,6 +354,10 @@ ${"```"}`.trim();
             }
             case "clear": {
               stdio.clear([convoFpish, recentConvoFpish]);
+              break;
+            }
+            case "help": {
+              await stdio.print([Fd.stdout], help);
               break;
             }
             case "exit": {

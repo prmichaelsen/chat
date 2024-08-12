@@ -1,10 +1,14 @@
 import fs from "fs";
-import isGlob from "is-glob";
+import { isGlob } from "../extern/isGlob";
 
 export const interpretInput = (input: string = "") => {
   let _input = input.trim();
   if (_input === "") {
     return "none";
+  }
+
+  if (_input === ":help" || _input === ": help") {
+    return "help";
   }
 
   if (_input === ":clear" || _input === ": clear") {
@@ -45,21 +49,14 @@ export const interpretInput = (input: string = "") => {
     }
   } catch (e) {}
 
+  if (isGlob(_input)) {
+    return "glob";
+  }
+
   try {
     new URL(_input);
     return "url";
   } catch (e) {}
-
-  if (isGlob(_input, { strict: true })) {
-    const parts = _input.split('\\ ');
-    // Require spaces be escaped in a glob,
-    // otherwise queries that include glob chars
-    // such as [ and ] may be incorrectly treated
-    // as globs
-    if (!parts.some(part => part.includes(' '))) {
-      return "glob";
-    }
-  }
 
   return "query";
 };
