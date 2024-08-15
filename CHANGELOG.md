@@ -32,3 +32,11 @@ greater than zero or up to and including 200,000.
 is equivalent to about 500 pages of text.
 
 https://support.anthropic.com/en/articles/7996856-what-is-the-maximum-prompt-length
+
+### [v.0.0.4] feat: Enable pruning conversations
+
+Use `--prune` to prune 400 tokens or `--prune n` to prune `n` tokens 
+from the conversation.
+
+If no conversation file is specified with `--read` then 
+the recovery conversation will be pruned.

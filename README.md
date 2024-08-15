@@ -17,7 +17,7 @@ Positionals:
 
 Control Flow:
   -i, --interactive                                                    [boolean]
-  -c, --continue     Resume conversation from recovery file. [default: true]
+  -c, --continue     Resume conversation from recovery file (default: true).
                                                                        [boolean]
 
 File System:
@@ -28,12 +28,15 @@ File System:
       --recovery-path  Output conversation recovery path.              [boolean]
       --clean-all      Clean up all recovery files.                    [boolean]
       --clean          Clean up recovery file for current shell.       [boolean]
+  -p, --prune          Prune 400 tokens (approximately one page) of the
+                       conversation or specify a number of tokens to prune
+                       (default: 400).                                  [number]
 
 Options:
       --tokens   Maximum number of tokens to sample. 400 tokens is approximately
                  one page of text. You can also configure tokens by setting the
-                 environment variable CHAT_MAX_TOKENS. [max: 200000]
-                                                      [number] [default: 200000]
+                 environment variable CHAT_MAX_TOKENS. (default: 200000, max:
+                 200000)                                                [number]
       --version  Show version number                                   [boolean]
       --help     Show help                                             [boolean]
 

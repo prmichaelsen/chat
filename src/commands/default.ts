@@ -60,6 +60,7 @@ cli
     clean?: boolean;
     recover?: boolean;
     tokens?: number;
+    prune?: number;
   }>(
     "$0 [input]",
     "",
@@ -80,7 +81,7 @@ cli
         alias: "c",
         type: "boolean",
         boolean: true,
-        description: "Resume conversation from recovery file. [default: true]",
+        description: "Resume conversation from recovery file (default: true).",
         conflicts: ["read"],
       });
       yargs.option("read", {
@@ -117,6 +118,7 @@ cli
           "continue",
           "clear",
           "clear-all",
+          "prune",
         ],
       });
       yargs.option("clean-all", {
@@ -133,6 +135,7 @@ cli
           "append",
           "clean",
           "recovery-path",
+          "prune",
         ],
       });
       yargs.option("clean", {
@@ -149,14 +152,37 @@ cli
           "append",
           "clean-all",
           "recovery-path",
+          "prune",
+        ],
+      });
+      yargs.option("prune", {
+        alias: "p",
+        group: Group.fs,
+        type: "number",
+        number: true,
+        description: "Prune 400 tokens (approximately one page) of the conversation or specify a number of tokens to prune (default: 400).",
+        conflicts: [
+          "input",
+          "interactive",
+          "continue",
+          "append",
+          "clean",
+          "clean-all",
+          "recovery-path",
+          "tokens",
         ],
       });
       yargs.options("tokens", {
         group: Group.options,
         type: "number",
-        default: 200000,
-        description: "Maximum number of tokens to sample. 400 tokens is approximately one page of text. You can also configure tokens by setting the environment variable CHAT_MAX_TOKENS. [max: 200000]",
+        description: "Maximum number of tokens to sample. 400 tokens is approximately one page of text. You can also configure tokens by setting the environment variable CHAT_MAX_TOKENS. (default: 200000, max: 200000)",
         number: true,
+        conflicts: [
+          "clean",
+          "clean-all",
+          "recovery-path",
+          "prune",
+        ]
       });
     },
     async (argv) => {
@@ -178,11 +204,41 @@ cli
         cleanAll = false,
         clean = false,
         recoveryPath = false,
-        tokens
+        tokens,
       } = argv;
+
+      if ('tokens' in argv && tokens === undefined) {
+        log.print(help);
+        log.print("Argument token requires a value.");
+        return;
+      }
 
       if (tokens) {
         maxTokens.set(tokens);
+      }
+
+      if ('prune' in argv) {
+        const { prune = 400 } = argv;
+        if (read) {
+          if (fs.existsSync(read)) {
+            const contents = fs.readFileSync(read, "utf-8");
+            const prunedContents = contents.split(' ').slice(prune).join(' ');
+            fs.writeFileSync(read, prunedContents);
+            log.print(`Pruned ${prune} tokens from ${read}`);
+          } else {
+            log.print(`Cannot prune ${read}. File does not exist`);
+          }
+        } else {
+          if (fs.existsSync(convoFp)) {
+            const contents = fs.readFileSync(convoFp, "utf-8");
+            const prunedContents = contents.split(' ').slice(prune).join(' ');
+            fs.writeFileSync(convoFp, prunedContents);
+            log.print(`Pruned ${prune} tokens from ${convoFp}`);
+          } else {
+            log.print(`Cannot prune ${convoFp}. File does not exist`);
+          }
+        }
+        return;
       }
 
       if (recoveryPath) {
