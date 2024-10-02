@@ -1,6 +1,6 @@
 {
   "name": "@prmichaelsen/chat",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": "./bin/chat",
@@ -21,10 +21,14 @@
     "test": "jest",
     "prettier": "prettier --write .",
     "prepack": "npm run build-prod",
+    "getPackageVersion": "cat package.json | jq '.version' | tr -d '\"'",
+    "getChangeLogVersion": "grep -oE '\\[v[0-9]+\\.[0-9]+\\.[0-9]+\\]' CHANGELOG.md | tail -1 | tr -d '[v' | tr -d ']'",
+    "isVersionSynced": "[[ $(npm run --silent getPackageVersion) == $(npm run --silent getChangeLogVersion) ]]",
     "isGitIndexClean": "git diff-files --quiet && git diff-index --cached --quiet HEAD --",
     "isBranchMainline": "[[ $(git rev-parse --abbrev-ref HEAD) == 'mainline' ]]",
+    "isPublishReady": "npm run isVersionSynced && npm run isBranchMainline && npm run isGitIndexClean",
     "clean": "$(rimraf dist && rimraf node_modules) || (npm install rimraf && npm run clean)",
-    "prepublishOnly": "npm run isBranchMainline && npm run isGitIndexClean && npm run clean && npm install && npm run test",
+    "prepublishOnly": "npm run isPublishReady && npm run clean && npm install && npm run test",
     "release": "npm publish --access=public"
   },
   "devDependencies": {
