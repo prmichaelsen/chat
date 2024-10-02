@@ -1,14 +1,15 @@
+*.tgz 
 .github
 .notes
 .prettier
 .prettier*
 .vscode
 /coverage
+/demos
 /node_modules
 /src
 README.md
+esbuild.*
 jest.config.js
 tsconfig.json
 tslint.json
-esbuild.*
-*.tgz 
