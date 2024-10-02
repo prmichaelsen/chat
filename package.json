@@ -1,6 +1,6 @@
 {
   "name": "@prmichaelsen/chat",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": "./bin/chat",
@@ -21,7 +21,11 @@
     "test": "jest",
     "prettier": "prettier --write .",
     "prepack": "npm run build-prod",
-    "prepublishOnly": "npm run test"
+    "isGitIndexClean": "git diff-files --quiet && git diff-index --cached --quiet HEAD --",
+    "isBranchMainline": "[[ $(git rev-parse --abbrev-ref HEAD) == 'mainline' ]]",
+    "clean": "$(rimraf dist && rimraf node_modules) || (npm install rimraf && npm run clean)",
+    "prepublishOnly": "npm run isBranchMainline && npm run isGitIndexClean && npm run clean && npm install && npm run test",
+    "release": "npm publish --access=public"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
@@ -29,6 +33,7 @@
     "esbuild": "^0.21.4",
     "esbuild-plugin-clean": "^1.0.1",
     "jest": "^29.7.0",
+    "rimraf": "^6.0.1",
     "ts-jest": "^29.1.2",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",

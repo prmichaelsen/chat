@@ -44,3 +44,7 @@ the recovery conversation will be pruned.
 
 ### [v1.0.0]
 #### [v.1.0.0] feat: Initial release
+
+#### [v.1.0.1] build: npm publish lifecycle improvements
+* `publish` fails if git index is dirty
+* `prepublishOnly` cleans dist and node_modules and performs a fresh install of dependencies
