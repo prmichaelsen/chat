@@ -1,4 +1,5 @@
 import { BedrockRuntime, config } from "aws-sdk";
+import { maxTokens } from "./maxTokens";
 
 config.update({ region: "us-east-1" });
 
@@ -13,7 +14,7 @@ export const chatService = async (input: ChatServiceInput) => {
       temperature: 0,
       top_p: 0,
       top_k: 0,
-      max_tokens_to_sample: 1000,
+      max_tokens_to_sample: maxTokens.get(),
       stop_sequences: ["[STOP]"],
     }),
     modelId: "anthropic.claude-v2",

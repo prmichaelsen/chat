@@ -1,0 +1,33 @@
+const CHAT_MAX_TOKENS = "CHAT_MAX_TOKENS";
+export const maxTokens = {
+  set: (val: number) => {
+    if (0 < val && val < 200001) {
+      process.env[CHAT_MAX_TOKENS] = val.toString();
+    } else {
+      throw new Error(JSON.stringify({
+        message: "CHAT_MAX_TOKENS must be a value more than 0 and up to 200000",
+        context: {
+          value: val,
+        }
+      }, null, 2));
+    }
+  },
+  get: () => {
+    const val = process.env[CHAT_MAX_TOKENS];
+    if (val) {
+      try {
+        return parseInt(val);
+      } catch (e) {
+        throw new Error(JSON.stringify({
+          message: "Failed to parse int CHAT_MAX_TOKENS",
+          context: {
+            value: val,
+            type: typeof val,
+          }
+        }, null, 2));
+      }
+    } else {
+      return 200000;
+    }
+  }
+}
