@@ -48,3 +48,5 @@ the recovery conversation will be pruned.
 #### [v.1.0.1] build: npm publish lifecycle improvements
 * `publish` fails if git index is dirty
 * `prepublishOnly` cleans dist and node_modules and performs a fresh install of dependencies
+
+#### [v.1.0.2] docs: npm badges
